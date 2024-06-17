@@ -1,5 +1,5 @@
-const transactionTypedef = `#graphql
-  type Transaction {
+const expenseTypedef = `#graphql
+  type Expense {
     _id: ID!
     userId: ID!
     description: String!
@@ -11,16 +11,16 @@ const transactionTypedef = `#graphql
   }
   
   type Query {
-    transactions: [Transaction!]
-    transaction(transactionId:ID!): Transaction
+    expenses: [Expense!]
+    expense(expenseId:ID!): Expense
   }
   type Mutation {
-    createTransaction(input: CreateTransactionInput!): Transaction!
-    updateTransaction(input: UpdateTransactionInput!): Transaction!
-    deleteTransaction(transactionId: ID!): Transaction!
+    createExpense(input: CreateExpenseInput!): Expense!
+    updateExpense(input: UpdateExpenseInput!): Expense!
+    deleteExpense(expenseId: ID!): Expense!
   }
   
-  input CreateTransactionInput {
+  input CreateExpenseInput {
     description: String!
     paymentType: String!
     category: String!
@@ -28,7 +28,7 @@ const transactionTypedef = `#graphql
     date: String!
     location: String
   }
-  input UpdateTransactionInput {
+  input UpdateExpenseInput {
     transactionId: ID!
     description: String
     paymentType: String
@@ -38,4 +38,4 @@ const transactionTypedef = `#graphql
     location: String
   }
 `;
-export default transactionTypedef;
+export default expenseTypedef;

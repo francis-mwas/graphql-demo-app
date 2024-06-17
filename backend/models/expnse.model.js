@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const transactionSchema = new mongoose.Schema({
+const expenseSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -34,6 +34,6 @@ const transactionSchema = new mongoose.Schema({
   },
 });
 
-const Transaction = mongoose.model('Transaction', transactionSchema);
+const Expense = mongoose.model('Transaction', expenseSchema);
 
-export default Transaction;
+export default Expense;
