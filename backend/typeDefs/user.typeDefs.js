@@ -14,8 +14,8 @@ const userTypeDef = `#graphql
   }
   
   type Mutation {
-    signUp(input: SignUpInput!): User
-    login(input: LoginInput!): User
+    registerUser(input: SignUpInput!): User
+    loginUser(input: LoginInput!): User
     logout: LogoutResponse
   }
   input SignUpInput {
@@ -33,5 +33,5 @@ const userTypeDef = `#graphql
   type LogoutResponse {
     message: String!
   }
-`
-export default userTypeDef
+`;
+export default userTypeDef;
