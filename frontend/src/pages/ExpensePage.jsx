@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 // import ExpenseFormSkeleton from '../Loader/SkeletonLoader';
 
 const TransactionPage = () => {
@@ -10,6 +11,7 @@ const TransactionPage = () => {
     location: '',
     date: '',
   });
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,10 +1,15 @@
+import toast from 'react-hot-toast';
+import { useMutation } from '@apollo/client';
+import { CREATE_EXPENSE } from '../graphql/mutations/expense.mutations';
+
 const ExpenseForm = () => {
+  const [createExpense, { loading }] = useMutation(CREATE_EXPENSE);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const form = e.target;
     const formData = new FormData(form);
-    const transactionData = {
+    const expenseData = {
       description: formData.get('description'),
       paymentType: formData.get('paymentType'),
       category: formData.get('category'),
@@ -12,7 +17,15 @@ const ExpenseForm = () => {
       location: formData.get('location'),
       date: formData.get('date'),
     };
-    console.log('transactionData', transactionData);
+
+    try {
+      await createExpense({ variables: { input: expenseData } });
+      form.reset();
+      toast.success('Expense recorded successfully!');
+    } catch (error) {
+      console.log('An error occurred when trying to save the expense: ', error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -27,7 +40,7 @@ const ExpenseForm = () => {
             className="block uppercase tracking-wide text-white text-xs font-bold mb-2"
             htmlFor="description"
           >
-            Transaction
+            Expense
           </label>
           <input
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -159,8 +172,9 @@ const ExpenseForm = () => {
           from-pink-500 to-pink-500 hover:from-pink-600 hover:to-pink-600
 						disabled:opacity-70 disabled:cursor-not-allowed"
         type="submit"
+        disabled={loading}
       >
-        Add Expense
+        {loading ? 'Loading...' : 'Add Expense'}
       </button>
     </form>
   );
