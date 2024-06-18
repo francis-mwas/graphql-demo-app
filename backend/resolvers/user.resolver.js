@@ -54,7 +54,7 @@ const userResolver = {
         });
 
         await newUser.save();
-        await context.loginUser(newUser);
+        await context.login(newUser);
         return newUser;
       } catch (err) {
         console.error('Error while signing up: ', err);
@@ -71,16 +71,27 @@ const userResolver = {
           password,
         });
 
-        await context.loginUser(user);
+        await context.login(user);
         return user;
       } catch (err) {
         console.error('Error while logging user in:', err);
         throw new Error(err.message || 'Internal server error');
       }
     },
-    
+    logout: async (_, __, context) => {
+      try {
+        await context.logout();
+        context.req.session.destroy((err) => {
+          if (err) throw err;
+        });
+        context.res.clearCookie('connect.sid');
+
+        return { message: 'Logged out successfully' };
+      } catch (err) {
+        console.error('Error in logout:', err);
+        throw new Error(err.message || 'Internal server error');
+      }
+    },
   },
-
-
 };
 export default userResolver;
