@@ -1,22 +1,47 @@
-import { useState } from 'react';
-
-// import ExpenseFormSkeleton from '../Loader/SkeletonLoader';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { GET_EXPENSE } from '../graphql/queries/expense.queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { UPDATE_EXPENSE } from '../graphql/mutations/expense.mutations';
+import ExpenseFormSkeleton from '../Loader/SkeletonLoader';
 
 const TransactionPage = () => {
-  const [formData, setFormData] = useState({
-    description: '',
-    paymentType: '',
-    category: '',
-    amount: '',
-    location: '',
-    date: '',
+  const { id } = useParams();
+  const { loading, data } = useQuery(GET_EXPENSE, {
+    variables: { id },
   });
+  const [updateExpense, { loading: updateLoading }] =
+    useMutation(UPDATE_EXPENSE);
 
-
+  const [formData, setFormData] = useState({
+    description: data?.expense?.description || '',
+    paymentType: data?.expense?.paymentType || '',
+    category: data?.expense?.category || '',
+    amount: data?.expense?.amount || '',
+    location: data?.expense?.location || '',
+    date: data?.expense?.date || '',
+  });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('formData', formData);
+    const amount = parseFloat(formData.amount);
+
+    try {
+      await updateExpense({
+        variables: {
+          input: {
+            ...formData,
+            amount,
+            transactionId: id,
+          },
+        },
+      });
+      toast.success('Expense updated successfully');
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -25,7 +50,20 @@ const TransactionPage = () => {
     }));
   };
 
-  //   return <ExpenseFormSkeleton />;
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        description: data?.expense?.description,
+        paymentType: data?.expense?.paymentType,
+        category: data?.expense?.category,
+        amount: data?.expense?.amount,
+        location: data?.expense?.location,
+        date: new Date(+data.expense.date).toISOString().substr(0, 10),
+      });
+    }
+  }, [data]);
+
+  if (loading) return <ExpenseFormSkeleton />;
 
   return (
     <div className="h-screen max-w-4xl mx-auto flex flex-col items-center">
@@ -36,7 +74,7 @@ const TransactionPage = () => {
         className="w-full max-w-lg flex flex-col gap-5 px-3 "
         onSubmit={handleSubmit}
       >
-        {/* TRANSACTION */}
+        {/* EXPENSE */}
         <div className="flex flex-wrap">
           <div className="w-full">
             <label
@@ -185,8 +223,9 @@ const TransactionPage = () => {
           className="text-white font-bold w-full rounded px-4 py-2 bg-gradient-to-br
           from-pink-500 to-pink-500 hover:from-pink-600 hover:to-pink-600"
           type="submit"
+          disabled={updateLoading}
         >
-          Update Transaction
+          {updateLoading ? 'Updating...' : 'Update Expense'}
         </button>
       </form>
     </div>

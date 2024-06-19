@@ -3,7 +3,9 @@ import { useMutation } from '@apollo/client';
 import { CREATE_EXPENSE } from '../graphql/mutations/expense.mutations';
 
 const ExpenseForm = () => {
-  const [createExpense, { loading }] = useMutation(CREATE_EXPENSE);
+  const [createExpense, { loading }] = useMutation(CREATE_EXPENSE, {
+    refetchQueries: ['GetExpenses'],
+  });
   const handleSubmit = async (e) => {
     e.preventDefault();
 

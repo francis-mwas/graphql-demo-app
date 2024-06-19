@@ -1,7 +1,7 @@
 const expenseTypedef = `#graphql
   type Expense {
     _id: ID!
-    userId: ID!
+    userId: ID
     description: String!
     paymentType: String!
     category: String!

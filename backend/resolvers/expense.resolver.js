@@ -7,7 +7,7 @@ const expenseResolver = {
         if (!context.getUser()) throw new Error('Unauthorized');
         const userId = await context.getUser()._id;
 
-        const expenses = await Transaction.find({ userId });
+        const expenses = await Expense.find({ userId });
         return expenses;
       } catch (err) {
         console.error('Error getting expenses:', err);
@@ -17,6 +17,7 @@ const expenseResolver = {
     expense: async (_, { expenseId }) => {
       try {
         const expense = await Expense.findById(expenseId);
+        console.log('Backend data: ', expense);
         return expense;
       } catch (err) {
         console.error('Error while retrieving expense:', err);
@@ -41,12 +42,13 @@ const expenseResolver = {
     updateExpense: async (_, { input }) => {
       try {
         const updatedExpense = await Expense.findByIdAndUpdate(
-          input.expnseId,
+          input.transactionId,
           input,
           {
             new: true,
           }
         );
+        console.log('The updated data: ', updatedExpense);
         return updatedExpense;
       } catch (err) {
         console.error('Error while updating an expense:', err);

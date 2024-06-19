@@ -29,8 +29,8 @@ export const UPDATE_EXPENSE = gql`
 `;
 
 export const DELETE_EXPENSE = gql`
-  mutation DeleteExpense($expnseId: ID!) {
-    deleteExpense(expenseId: $expnseId) {
+  mutation DeleteExpense($expenseId: ID!) {
+    deleteExpense(expenseId: $expenseId) {
       _id
       description
       paymentType
